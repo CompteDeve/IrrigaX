@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IrrigaX+ – Optimisation intelligente de l'irrigation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Existing styles remain unchanged */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: #f5f9fc;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .page {
+            display: none;
+            width: 100%;
+            max-width: 100%;
+            background: white;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .active-page {
+            display: block;
+        }
+        .content {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .page-header h1 {
+            font-size: 2.2rem;
+            color: #2c8c47;
+            margin-bottom: 10px;
+        }
+        .page-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(44, 140, 71, 0.1);
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            color: #2c8c47;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .welcome {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .welcome h2 {
+            font-size: 1.8rem;
+            color: #2c8c47;
+            margin-bottom: 15px;
+        }
+        .welcome p {
+            color: #555;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .project-info {
+            background: #f0f9f0;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .project-info h3 {
+            color: #2c8c47;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+        
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .project-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+        
+        .project-card i {
+            font-size: 2.5rem;
+            color: #2c8c47;
+            margin-bottom: 15px;
+        }
+        
+        .project-card h4 {
+            color: #2c8c47;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: #2c8c47;
+            outline: none;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #2c8c47;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            text-align: center;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background: #247339;
+            transform: translateY(-2px);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #2c8c47;
+            color: #2c8c47;
+        }
+        
+        .btn-outline:hover {
+            background: #f0f9f0;
+        }
+        
+        .link-text {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+        
+        .link-text a {
+            color: #2c8c47;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .link-text a:hover {
+            text-decoration: underline;
+        }
+        
+        .leaf-icon {
+            font-size: 4rem;
+            color: #2c8c47;
+            margin: 15px 0;
+        }
+        
+        .upload-area {
+            border: 3px dashed #2c8c47;
+            border-radius: 15px;
+            padding: 60px 20px;
+            text-align: center;
+            margin: 40px auto;
+            background: #f8fff8;
+            cursor: pointer;
+            transition: background 0.3s;
+            max-width: 600px;
+        }
+        
+        .upload-area:hover {
+            background: #f0f9f0;
+        }
+        
+        .upload-icon {
+            font-size: 3.5rem;
+            color: #2c8c47;
+            margin-bottom: 20px;
+        }
+        
+        .result-card {
+            background: #f8fff8;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid #2c8c47;
+            max-width: 800px;
+        }
+        
+        .score {
+            font-size: 4.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: #2c8c47;
+            margin: 30px 0;
+        }
+        
+        .result-text {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .rtl-text {
+            direction: rtl;
+            text-align: right;
+        }
+        
+        .ltr-text {
+            direction: ltr;
+            text-align: left;
+        }
+        
+        .advice-list {
+            margin-top: 35px;
+        }
+        
+        .advice-item {
+            padding: 18px;
+            margin-bottom: 18px;
+            border-radius: 10px;
+            background: #f0f9f0;
+            border-left: 4px solid #2c8c47;
+            display: flex;
+            align-items: center;
+        }
+        
+        .advice-item i {
+            margin-right: 15px;
+            font-size: 1.7rem;
+            color: #2c8c47;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f0f9f0;
+            border-radius: 15px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .user-icon {
+            width: 70px;
+            height: 70px;
+            background: #2c8c47;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 25px;
+            color: white;
+            font-size: 2rem;
+        }
+        
+        .user-details h3 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            color: #2c8c47;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+        
+        .btn-group .btn {
+            flex: none;
+        }
+        
+        .app-description {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            text-align: center;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+        
+        .feature-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+        
+        .feature-card {
+            background: #f8faf8;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid #e0f0e0;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .feature-card i {
+            font-size: 2.8rem;
+            color: #2c8c47;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            color: #2c8c47;
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 15px;
+            }
+            
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .leaf-icon {
+                font-size: 3.5rem;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn-group .btn {
+                width: 100%;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .user-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page d'inscription -->
+    <div id="signup-page" class="page">
+        <div class="content">
+            <div class="language-selector" id="signup-lang">Français</div>
+            <div class="page-header">
+                <h1>IrrigaX+</h1>
+                <p>Optimisation intelligente de l'irrigation</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="name" id="name-label">Nom</label>
+                <input type="text" id="name" class="form-control" placeholder="Votre nom complet">
+            </div>
+            <div class="form-group">
+                <label for="email" id="email-label">Email</label>
+                <input type="email" id="email" class="form-control" placeholder="votre@email.com">
+            </div>
+            <div class="form-group">
+                <label for="phone" id="phone-label">Téléphone</label>
+                <input type="tel" id="phone" class="form-control" placeholder="Votre numéro de téléphone">
+            </div>
+            <div class="form-group">
+                <label for="password" id="password-label">Mot de passe</label>
+                <input type="password" id="password" class="form-control" placeholder="Créez un mot de passe">
+            </div>
+            <div class="form-group">
+                <label for="language" id="language-label">Choisir la langue</label>
+                <select id="language" class="form-control">
+                    <option value="fr">Français</option>
+                    <option value="en">English</option>
+                    <option value="ar">العربية</option>
+                </select>
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <button id="signup-btn" class="btn">S'inscrire</button>
+            </div>
+            <div class="link-text">
+                Vous avez déjà un compte? <a href="#" onclick="showPage('login-page')">Se connecter</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page de connexion -->
+    <div id="login-page" class="page">
+        <div class="content">
+            <div class="language-selector" id="login-lang">Français</div>
+            <div class="page-header">
+                <h1>IrrigaX+</h1>
+                <p>Optimisation intelligente de l'irrigation</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="login-email" id="login-email-label">Email ou téléphone</label>
+                <input type="text" id="login-email" class="form-control" placeholder="Email ou téléphone">
+            </div>
+            <div class="form-group">
+                <label for="login-password" id="login-password-label">Mot de passe</label>
+                <input type="password" id="login-password" class="form-control" placeholder="Votre mot de passe">
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <button id="login-btn" class="btn">Se connecter</button>
+            </div>
+            <div class="link-text">
+                Vous n'avez pas de compte? <a href="#" onclick="showPage('signup-page')">S'inscrire</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page d'accueil -->
+    <div id="home-page" class="page">
+        <div class="content">
+            <div class="language-selector" id="home-lang">Français</div>
+            <div class="page-header">
+                <h1>IrrigaX+</h1>
+                <p>Optimisation intelligente de l'irrigation</p>
+            </div>
+            
+            <div class="user-info">
+                <div class="user-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <h3 id="username-display">Alice</h3>
+                    <p id="welcome-msg">Bienvenue sur IrrigaX+</p>
+                </div>
+            </div>
+            
+            <div class="app-description" id="app-description">
+                IrrigaX+ est une solution intelligente d'irrigation qui optimise l'utilisation de l'eau en agriculture grâce à l'analyse d'images et un système incitatif. Notre objectif est de réduire le gaspillage d'eau en agriculture tout en récompensant les pratiques efficaces.
+            </div>
+            
+            <div class="feature-section">
+                <div class="feature-card">
+                    <i class="fas fa-water"></i>
+                    <h3 id="feature1-title">Économie d'eau</h3>
+                    <p id="feature1-text">Réduisez votre consommation d'eau jusqu'à 30% grâce à nos algorithmes d'optimisation</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-seedling"></i>
+                    <h3 id="feature2-title">Santé des plantes</h3>
+                    <p id="feature2-text">Détection précoce des maladies et carences pour des cultures plus saines</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3 id="feature3-title">Suivi intelligent</h3>
+                    <p id="feature3-text">Analyses et recommandations basées sur les données de vos cultures</p>
+                </div>
+            </div>
+            
+            <div class="project-info">
+                <h3 id="project-info-title">IrrigaX+ en bref</h3>
+                <div class="project-grid">
+                    <div class="project-card">
+                        <i class="fas fa-globe-africa"></i>
+                        <h4 id="project1-title">Problématique mondiale</h4>
+                        <p id="project1-text">L'agriculture consomme 70% de l'eau douce mondiale</p>
+                    </div>
+                    <div class="project-card">
+                        <i class="fas fa-tint-slash"></i>
+                        <h4 id="project2-title">Gaspillage d'eau</h4>
+                        <p id="project2-text">Seulement 40% de cette eau atteint effectivement les cultures</p>
+                    </div>
+                    <div class="project-card">
+                        <i class="fas fa-bullseye"></i>
+                        <h4 id="project3-title">Notre solution</h4>
+                        <p id="project3-text">Optimiser l'irrigation et récompenser les pratiques efficaces</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn" onclick="showPage('analyze-page')">
+                    <i class="fas fa-cloud-upload-alt"></i> <span id="analyze-btn-text">Analyser une image</span>
+                </button>
+                <button class="btn btn-outline" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> <span id="logout-btn-text">Déconnexion</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page d'analyse -->
+    <div id="analyze-page" class="page">
+        <div class="content">
+            <div class="language-selector" id="analyze-lang">Français</div>
+            <div class="page-header">
+                <h1 id="analyze-header">Analyse d'image</h1>
+                <p id="analyze-subheader">Chargez une photo de votre plante</p>
+            </div>
+            
+            <div class="welcome">
+                <div class="leaf-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h2 id="analyze-title">Analysez vos plantes</h2>
+                <p id="analyze-instruction">Prenez une photo claire de votre plante pour obtenir une analyse complète de ses besoins en eau et de sa santé</p>
+            </div>
+            
+            <div class="upload-area" onclick="document.getElementById('file-input').click()">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3 id="upload-title">Cliquez pour télécharger une image</h3>
+                <p id="upload-formats">Formats supportés: JPG, PNG</p>
+                <input type="file" id="file-input" accept="image/*" style="display: none;">
+            </div>
+            
+            <div id="image-preview" style="display: none; margin-bottom: 30px; text-align: center;">
+                <img id="preview" style="max-width: 100%; max-height: 300px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+            </div>
+            
+            <div class="btn-group">
+                <button id="analyze-btn" class="btn" onclick="analyzeImage()">
+                    <i class="fas fa-search"></i> <span id="analyze-plant-text">Analyser la plante</span>
+                </button>
+                <button class="btn btn-outline" onclick="showPage('home-page')">
+                    <i class="fas fa-arrow-left"></i> <span id="back-btn-text">Retour</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page de résultats -->
+    <div id="results-page" class="page">
+        <div class="content">
+            <div class="language-selector" id="results-lang">Français</div>
+            <div class="page-header">
+                <h1 id="results-header">Résultats d'analyse</h1>
+                <p id="results-subheader">Diagnostic de votre plante</p>
+            </div>
+            
+            <div class="score">82</div>
+            
+            <div class="result-card">
+                <h3 style="margin-bottom: 15px; color: #2c8c47;" id="diagnostic-title">Diagnostic:</h3>
+                <div class="result-text" id="diagnostic-text">
+                    Les plantes infectées par le virus de l'enroulement des feuilles de tomate (ToLCV) doivent être retirées pour éviter la propagation, puis pulvérisez un insecticide approprié et contrôlez les insectes vecteurs de virus.
+                </div>
+            </div>
+            
+            <div class="advice-list">
+                <h3 style="margin-bottom: 15px; color: #2c8c47;" id="advice-title">Conseils:</h3>
+                <div class="advice-item">
+                    <i class="fas fa-tint"></i>
+                    <div id="advice-1">Humidité du sol: 45% - Arrosez modérément (2 fois/semaine)</div>
+                </div>
+                <div class="advice-item">
+                    <i class="fas fa-shower"></i>
+                    <div id="advice-2">Débit d'eau: 30% - Réduire l'irrigation de 20%</div>
+                </div>
+                <div class="advice-item">
+                    <i class="fas fa-bug"></i>
+                    <div id="advice-3">Maladie: Virus ToLCV - Appliquez un traitement antiviral</div>
+                </div>
+                <div class="advice-item">
+                    <i class="fas fa-sun"></i>
+                    <div id="advice-4">Exposition: 6h/jour - Maintenir ce niveau</div>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn" onclick="showPage('analyze-page')">
+                    <i class="fas fa-redo"></i> <span id="new-analysis-text">Nouvelle analyse</span>
+                </button>
+                <button class="btn btn-outline" onclick="showPage('home-page')">
+                    <i class="fas fa-home"></i> <span id="home-btn-text">Retour à l'accueil</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Stockage des utilisateurs dans le localStorage
+        let users = JSON.parse(localStorage.getItem('irrigax_users')) || [];
+        let currentLang = 'fr';
+        
+        // Traductions
+        const translations = {
+            fr: {
+                appName: "IrrigaX+",
+                appDesc: "Optimisation intelligente de l'irrigation",
+                signupTitle: "Inscription",
+                loginTitle: "Connexion",
+                homeTitle: "Accueil",
+                analyzeTitle: "Analyse d'image",
+                resultsTitle: "Résultats d'analyse",
+                welcome: "Bienvenue sur IrrigaX+",
+                analyzeHeader: "Analysez vos plantes",
+                appDescription: "IrrigaX+ est une solution intelligente d'irrigation qui optimise l'utilisation de l'eau en agriculture grâce à l'analyse d'images et un système incitatif. Notre objectif est de réduire le gaspillage d'eau en agriculture tout en récompensant les pratiques efficaces.",
+                analyzeBtn: "Analyser une image",
+                logoutBtn: "Déconnexion",
+                analyzeHeaderText: "Analyse d'image",
+                analyzeSubheader: "Chargez une photo de votre plante",
+                analyzeInstruction: "Prenez une photo claire de votre plante pour obtenir une analyse complète de ses besoins en eau et de sa santé",
+                uploadTitle: "Cliquez pour télécharger une image",
+                uploadFormats: "Formats supportés : JPG, PNG",
+                analyzePlant: "Analyser la plante",
+                backBtn: "Retour",
+                resultsHeader: "Résultats d'analyse",
+                resultsSubheader: "Diagnostic de votre plante",
+                diagnosticTitle: "Diagnostic :",
+                diagnosticText: "Les plantes infectées par le virus de l'enroulement des feuilles de tomate (ToLCV) doivent être retirées pour éviter la propagation, puis pulvérisez un insecticide approprié et contrôlez les insectes vecteurs de virus.",
+                adviceTitle: "Conseils :",
+                newAnalysis: "Nouvelle analyse",
+                homeBtn: "Retour à l'accueil",
+                advice1: "Humidité du sol : 45% - Arrosez modérément (2 fois/semaine)",
+                advice2: "Débit d'eau : 30% - Réduire l'irrigation de 20%",
+                advice3: "Maladie : Virus ToLCV - Appliquez un traitement antiviral",
+                advice4: "Exposition : 6h/jour - Maintenir ce niveau",
+                signupText: "S'inscrire",
+                loginText: "Se connecter",
+                haveAccount: "Vous avez déjà un compte ? ",
+                noAccount: "Vous n'avez pas de compte ? ",
+                loginLink: "Se connecter",
+                signupLink: "S'inscrire",
+                nameLabel: "Nom",
+                emailLabel: "Email",
+                phoneLabel: "Téléphone",
+                passwordLabel: "Mot de passe",
+                languageLabel: "Choisir la langue",
+                namePlaceholder: "Votre nom complet",
+                emailPlaceholder: "votre@email.com",
+                phonePlaceholder: "Votre numéro de téléphone",
+                passwordPlaceholder: "Créez un mot de passe",
+                loginEmailLabel: "Email ou téléphone",
+                loginEmailPlaceholder: "Email ou téléphone",
+                loginPasswordLabel: "Mot de passe",
+                loginPasswordPlaceholder: "Votre mot de passe",
+                feature1Title: "Économie d'eau",
+                feature1Text: "Réduisez votre consommation d'eau jusqu'à 30% grâce à nos algorithmes d'optimisation",
+                feature2Title: "Santé des plantes",
+                feature2Text: "Détection précoce des maladies et carences pour des cultures plus saines",
+                feature3Title: "Suivi intelligent",
+                feature3Text: "Analyses et recommandations basées sur les données de vos cultures",
+                projectInfoTitle: "IrrigaX+ en bref",
+                project1Title: "Problématique mondiale",
+                project1Text: "L'agriculture consomme 70% de l'eau douce mondiale",
+                project2Title: "Gaspillage d'eau",
+                project2Text: "Seulement 40% de cette eau atteint effectivement les cultures",
+                project3Title: "Notre solution",
+                project3Text: "Optimiser l'irrigation et récompenser les pratiques efficaces"
+            },
+            en: {
+                appName: "IrrigaX+",
+                appDesc: "Smart Irrigation Optimization",
+                signupTitle: "Sign Up",
+                loginTitle: "Login",
+                homeTitle: "Home",
+                analyzeTitle: "Image Analysis",
+                resultsTitle: "Analysis Results",
+                welcome: "Welcome to IrrigaX+",
+                analyzeHeader: "Analyze Your Plants",
+                appDescription: "IrrigaX+ is an intelligent irrigation solution that optimizes water use in agriculture through image analysis and an incentive system. Our goal is to reduce water wastage in agriculture while rewarding efficient practices.",
+                analyzeBtn: "Analyze an Image",
+                logoutBtn: "Logout",
+                analyzeHeaderText: "Image Analysis",
+                analyzeSubheader: "Upload a photo of your plant",
+                analyzeInstruction: "Take a clear photo of your plant for a comprehensive analysis of its water needs and health",
+                uploadTitle: "Click to upload an image",
+                uploadFormats: "Supported formats: JPG, PNG",
+                analyzePlant: "Analyze Plant",
+                backBtn: "Back",
+                resultsHeader: "Analysis Results",
+                resultsSubheader: "Plant Diagnosis",
+                diagnosticTitle: "Diagnosis:",
+                diagnosticText: "Plants infected with Tomato Leaf Curl Virus (ToLCV) should be removed to prevent spread, then spray an appropriate insecticide and control virus-carrying insects.",
+                adviceTitle: "Advice:",
+                newAnalysis: "New Analysis",
+                homeBtn: "Back to Home",
+                advice1: "Soil moisture: 45% - Water moderately (twice/week)",
+                advice2: "Water flow: 30% - Reduce irrigation by 20%",
+                advice3: "Disease: ToLCV Virus - Apply antiviral treatment",
+                advice4: "Sun exposure: 6h/day - Maintain this level",
+                signupText: "Sign Up",
+                loginText: "Login",
+                haveAccount: "Already have an account? ",
+                noAccount: "Don't have an account? ",
+                loginLink: "Login",
+                signupLink: "Sign Up",
+                nameLabel: "Name",
+                emailLabel: "Email",
+                phoneLabel: "Phone",
+                passwordLabel: "Password",
+                languageLabel: "Select Language",
+                namePlaceholder: "Your full name",
+                emailPlaceholder: "your@email.com",
+                phonePlaceholder: "Your phone number",
+                passwordPlaceholder: "Create a password",
+                loginEmailLabel: "Email or phone",
+                loginEmailPlaceholder: "Email or phone",
+                loginPasswordLabel: "Password",
+                loginPasswordPlaceholder: "Your password",
+                feature1Title: "Water Saving",
+                feature1Text: "Reduce your water consumption by up to 30% with our optimization algorithms",
+                feature2Title: "Plant Health",
+                feature2Text: "Early detection of diseases and deficiencies for healthier crops",
+                feature3Title: "Smart Monitoring",
+                feature3Text: "Analyses and recommendations based on your crop data",
+                projectInfoTitle: "IrrigaX+ in Brief",
+                project1Title: "Global Challenge",
+                project1Text: "Agriculture consumes 70% of the world's fresh water",
+                project2Title: "Water Wastage",
+                project2Text: "Only 40% of this water actually reaches the crops",
+                project3Title: "Our Solution",
+                project3Text: "Optimize irrigation and reward efficient practices"
+            },
+            ar: {
+                appName: "إيريجا إكس+",
+                appDesc: "التحسين الذكي للري",
+                signupTitle: "تسجيل",
+                loginTitle: "تسجيل الدخول",
+                homeTitle: "الصفحة الرئيسية",
+                analyzeTitle: "تحليل الصور",
+                resultsTitle: "نتائج التحليل",
+                welcome: "مرحبًا بكم في إيريجا إكس+",
+                analyzeHeader: "حلل نباتاتك",
+                appDescription: "إيريجا إكس+ هو حل ري ذكي يحسن استخدام المياه في الزراعة من خلال تحليل الصور ونظام حوافز. هدفنا هو تقليل هدر المياه في الزراعة مع مكافأة الممارسات الفعالة.",
+                analyzeBtn: "تحليل صورة",
+                logoutBtn: "تسجيل الخروج",
+                analyzeHeaderText: "تحليل الصور",
+                analyzeSubheader: "قم برفع صورة لنباتك",
+                analyzeInstruction: "التقط صورة واضحة لنباتك للحصول على تحليل شامل لاحتياجاته المائية وحالته الصحية",
+                uploadTitle: "انقر لتحميل صورة",
+                uploadFormats: "الصيغ المدعومة: JPG، PNG",
+                analyzePlant: "تحليل النبات",
+                backBtn: "رجوع",
+                resultsHeader: "نتائج التحليل",
+                resultsSubheader: "تشخيص نباتك",
+                diagnosticTitle: "التشخيص:",
+                diagnosticText: "يجب إزالة النباتات المصابة بفيروس تجعد أوراق الطماطم (ToLCV) لمنع انتشاره، ثم رش مبيد حشري مناسب والتحكم في الحشرات الناقلة للفيروسات.",
+                adviceTitle: "نصائح:",
+                newAnalysis: "تحليل جديد",
+                homeBtn: "العودة للصفحة الرئيسية",
+                advice1: "رطوبة التربة: 45% - اسقِ باعتدال (مرتين/أسبوع)",
+                advice2: "تدفق الماء: 30% - قلل الري بنسبة 20%",
+                advice3: "المرض: فيروس تجعد أوراق الطماطم - استخدم علاجًا مضادًا للفيروسات",
+                advice4: "التعرض للشمس: 6 ساعات/يوم - حافظ على هذا المستوى",
+                signupText: "تسجيل",
+                loginText: "تسجيل الدخول",
+                haveAccount: "هل لديك حساب؟ ",
+                noAccount: "ليس لديك حساب؟ ",
+                loginLink: "تسجيل الدخول",
+                signupLink: "تسجيل",
+                nameLabel: "الاسم",
+                emailLabel: "البريد الإلكتروني",
+                phoneLabel: "رقم الهاتف",
+                passwordLabel: "كلمة المرور",
+                languageLabel: "اختر اللغة",
+                namePlaceholder: "اسمك الكامل",
+                emailPlaceholder: "بريدك الإلكتروني",
+                phonePlaceholder: "رقم هاتفك",
+                passwordPlaceholder: "أنشئ كلمة مرور",
+                loginEmailLabel: "البريد الإلكتروني أو الهاتف",
+                loginEmailPlaceholder: "البريد الإلكتروني أو الهاتف",
+                loginPasswordLabel: "كلمة المرور",
+                loginPasswordPlaceholder: "كلمة مرورك",
+                feature1Title: "توفير المياه",
+                feature1Text: "قلل استهلاكك للمياه بنسبة تصل إلى 30% بفضل خوارزميات التحسين لدينا",
+                feature2Title: "صحة النباتات",
+                feature2Text: "الكشف المبكر عن الأمراض والنقائص لمحاصيل أكثر صحة",
+                feature3Title: "المراقبة الذكية",
+                feature3Text: "تحليلات وتوصيات بناءً على بيانات محاصيلك",
+                projectInfoTitle: "إيريجا إكس+ باختصار",
+                project1Title: "التحدي العالمي",
+                project1Text: "الزراعة تستهلك 70% من المياه العذبة في العالم",
+                project2Title: "هدر المياه",
+                project2Text: "40% فقط من هذه المياه تصل فعليًا إلى المحاصيل",
+                project3Title: "حلنا",
+                project3Text: "تحسين الري ومكافأة الممارسات الفعالة"
+            }
+        };
+        
+        // Éléments DOM
+        const signupBtn = document.getElementById('signup-btn');
+        const loginBtn = document.getElementById('login-btn');
+        const fileInput = document.getElementById('file-input');
+        const preview = document.getElementById('preview');
+        const imagePreview = document.getElementById('image-preview');
+        const usernameDisplay = document.getElementById('username-display');
+        const langSelectors = document.querySelectorAll('.language-selector');
+        
+        // Afficher une page spécifique
+        function showPage(pageId) {
+            // Cacher toutes les pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active-page');
+            });
+            
+            // Afficher la page demandée
+            document.getElementById(pageId).classList.add('active-page');
+            
+            // Mettre à jour les textes selon la langue
+            updatePageTexts();
+            
+            // Si c'est la page d'accueil, mettre à jour le nom d'utilisateur
+            if (pageId === 'home-page') {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                if (currentUser) {
+                    usernameDisplay.textContent = currentUser.name;
+                }
+            }
+        }
+        
+        // Mettre à jour les textes de la page selon la langue
+        function updatePageTexts() {
+            const lang = currentLang;
+            const t = translations[lang];
+            
+            // Mettre à jour les sélecteurs de langue
+            document.querySelectorAll('.language-selector').forEach(el => {
+                if (lang === 'fr') el.textContent = 'Français';
+                if (lang === 'en') el.textContent = 'English';
+                if (lang === 'ar') el.textContent = 'العربية';
+            });
+            
+            // Mettre à jour les titres des pages
+            document.querySelectorAll('.page-header h1').forEach(el => {
+                const pageId = el.closest('.page').id;
+                if (pageId === 'signup-page') el.textContent = t.signupTitle;
+                if (pageId === 'login-page') el.textContent = t.loginTitle;
+                if (pageId === 'home-page') el.textContent = t.appName;
+                if (pageId === 'analyze-page') el.textContent = t.analyzeTitle;
+                if (pageId === 'results-page') el.textContent = t.resultsTitle;
+            });
+            
+            // Mettre à jour les sous-titres des pages
+            document.querySelectorAll('.page-header p').forEach(el => {
+                el.textContent = t.appDesc;
+            });
+            
+            // Mettre à jour les labels et placeholders des formulaires
+            if (document.getElementById('name-label')) document.getElementById('name-label').textContent = t.nameLabel;
+            if (document.getElementById('email-label')) document.getElementById('email-label').textContent = t.emailLabel;
+            if (document.getElementById('phone-label')) document.getElementById('phone-label').textContent = t.phoneLabel;
+            if (document.getElementById('password-label')) document.getElementById('password-label').textContent = t.passwordLabel;
+            if (document.getElementById('language-label')) document.getElementById('language-label').textContent = t.languageLabel;
+            if (document.getElementById('name')) document.getElementById('name').placeholder = t.namePlaceholder;
+            if (document.getElementById('email')) document.getElementById('email').placeholder = t.emailPlaceholder;
+            if (document.getElementById('phone')) document.getElementById('phone').placeholder = t.phonePlaceholder;
+            if (document.getElementById('password')) document.getElementById('password').placeholder = t.passwordPlaceholder;
+            if (document.getElementById('login-email-label')) document.getElementById('login-email-label').textContent = t.loginEmailLabel;
+            if (document.getElementById('login-email')) document.getElementById('login-email').placeholder = t.loginEmailPlaceholder;
+            if (document.getElementById('login-password-label')) document.getElementById('login-password-label').textContent = t.loginPasswordLabel;
+            if (document.getElementById('login-password')) document.getElementById('login-password').placeholder = t.loginPasswordPlaceholder;
+            
+            // Mettre à jour les autres éléments
+            if (document.getElementById('welcome-msg')) document.getElementById('welcome-msg').textContent = t.welcome;
+            if (document.getElementById('analyze-title')) document.getElementById('analyze-title').textContent = t.analyzeHeader;
+            if (document.getElementById('app-description')) document.getElementById('app-description').textContent = t.appDescription;
+            if (document.getElementById('analyze-btn-text')) document.getElementById('analyze-btn-text').textContent = t.analyzeBtn;
+            if (document.getElementById('logout-btn-text')) document.getElementById('logout-btn-text').textContent = t.logoutBtn;
+            if (document.getElementById('analyze-header')) document.getElementById('analyze-header').textContent = t.analyzeHeaderText;
+            if (document.getElementById('analyze-subheader')) document.getElementById('analyze-subheader').textContent = t.analyzeSubheader;
+            if (document.getElementById('analyze-instruction')) document.getElementById('analyze-instruction').textContent = t.analyzeInstruction;
+            if (document.getElementById('upload-title')) document.getElementById('upload-title').textContent = t.uploadTitle;
+            if (document.getElementById('upload-formats')) document.getElementById('upload-formats').textContent = t.uploadFormats;
+            if (document.getElementById('analyze-plant-text')) document.getElementById('analyze-plant-text').textContent = t.analyzePlant;
+            if (document.getElementById('back-btn-text')) document.getElementById('back-btn-text').textContent = t.backBtn;
+            if (document.getElementById('results-header')) document.getElementById('results-header').textContent = t.resultsHeader;
+            if (document.getElementById('results-subheader')) document.getElementById('results-subheader').textContent = t.resultsSubheader;
+            if (document.getElementById('diagnostic-title')) document.getElementById('diagnostic-title').textContent = t.diagnosticTitle;
+            if (document.getElementById('diagnostic-text')) document.getElementById('diagnostic-text').textContent = t.diagnosticText;
+            if (document.getElementById('advice-title')) document.getElementById('advice-title').textContent = t.adviceTitle;
+            if (document.getElementById('new-analysis-text')) document.getElementById('new-analysis-text').textContent = t.newAnalysis;
+            if (document.getElementById('home-btn-text')) document.getElementById('home-btn-text').textContent = t.homeBtn;
+            if (document.getElementById('signup-btn')) document.getElementById('signup-btn').textContent = t.signupText;
+            if (document.getElementById('login-btn')) document.getElementById('login-btn').textContent = t.loginText;
+            
+            // Mettre à jour les conseils
+            if (document.getElementById('advice-1')) document.getElementById('advice-1').textContent = t.advice1;
+            if (document.getElementById('advice-2')) document.getElementById('advice-2').textContent = t.advice2;
+            if (document.getElementById('advice-3')) document.getElementById('advice-3').textContent = t.advice3;
+            if (document.getElementById('advice-4')) document.getElementById('advice-4').textContent = t.advice4;
+            
+            // Mettre à jour les feature cards
+            if (document.getElementById('feature1-title')) document.getElementById('feature1-title').textContent = t.feature1Title;
+            if (document.getElementById('feature1-text')) document.getElementById('feature1-text').textContent = t.feature1Text;
+            if (document.getElementById('feature2-title')) document.getElementById('feature2-title').textContent = t.feature2Title;
+            if (document.getElementById('feature2-text')) document.getElementById('feature2-text').textContent = t.feature2Text;
+            if (document.getElementById('feature3-title')) document.getElementById('feature3-title').textContent = t.feature3Title;
+            if (document.getElementById('feature3-text')) document.getElementById('feature3-text').textContent = t.feature3Text;
+            
+            // Mettre à jour les project cards
+            if (document.getElementById('project-info-title')) document.getElementById('project-info-title').textContent = t.projectInfoTitle;
+            if (document.getElementById('project1-title')) document.getElementById('project1-title').textContent = t.project1Title;
+            if (document.getElementById('project1-text')) document.getElementById('project1-text').textContent = t.project1Text;
+            if (document.getElementById('project2-title')) document.getElementById('project2-title').textContent = t.project2Title;
+            if (document.getElementById('project2-text')) document.getElementById('project2-text').textContent = t.project2Text;
+            if (document.getElementById('project3-title')) document.getElementById('project3-title').textContent = t.project3Title;
+            if (document.getElementById('project3-text')) document.getElementById('project3-text').textContent = t.project3Text;
+            
+            // Mettre à jour les liens
+            const haveAccount = document.querySelector('#signup-page .link-text');
+            const noAccount = document.querySelector('#login-page .link-text');
+            
+            if (haveAccount) haveAccount.innerHTML = t.haveAccount + '<a href="#" onclick="showPage(\'login-page\')">' + t.loginLink + '</a>';
+            if (noAccount) noAccount.innerHTML = t.noAccount + '<a href="#" onclick="showPage(\'signup-page\')">' + t.signupLink + '</a>';
+            
+            // Appliquer la direction du texte pour l'arabe
+            if (lang === 'ar') {
+                document.body.style.direction = 'rtl';
+                document.body.style.textAlign = 'right';
+                if (document.getElementById('diagnostic-text')) {
+                    document.getElementById('diagnostic-text').classList.add('rtl-text');
+                    document.getElementById('diagnostic-text').classList.remove('ltr-text');
+                }
+            } else {
+                document.body.style.direction = 'ltr';
+                document.body.style.textAlign = 'left';
+                if (document.getElementById('diagnostic-text')) {
+                    document.getElementById('diagnostic-text').classList.add('ltr-text');
+                    document.getElementById('diagnostic-text').classList.remove('rtl-text');
+                }
+            }
+        }
+        
+        // Initialisation - Afficher la page de connexion par défaut
+        showPage('login-page');
+        
+        // Gestion de l'inscription
+        signupBtn.addEventListener('click', function() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const language = document.getElementById('language').value;
+            
+            if (!name || !email || !phone || !password) {
+                alert(translations[currentLang].alertFillAllFields || 'Veuillez remplir tous les champs');
+                return;
+            }
+            
+            // Vérifier si l'utilisateur existe déjà
+            const userExists = users.some(user => user.email === email);
+            
+            if (userExists) {
+                alert(translations[currentLang].alertUserExists || 'Un utilisateur avec cet email existe déjà');
+                return;
+            }
+            
+            // Créer un nouvel utilisateur
+            const newUser = {
+                id: Date.now(),
+                name,
+                email,
+                phone,
+                password,
+                language
+            };
+            
+            // Ajouter à la liste des utilisateurs
+            users.push(newUser);
+            localStorage.setItem('irrigax_users', JSON.stringify(users));
+            
+            // Connecter l'utilisateur
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            currentLang = language;
+            
+            // Rediriger vers la page d'accueil
+            showPage('home-page');
+        });
+        
+        // Gestion de la connexion
+        loginBtn.addEventListener('click', function() {
+            const loginEmail = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!loginEmail || !password) {
+                alert(translations[currentLang].alertFillAllFields || 'Veuillez remplir tous les champs');
+                return;
+            }
+            
+            // Trouver l'utilisateur
+            const user = users.find(u => 
+                (u.email === loginEmail || u.phone === loginEmail) && 
+                u.password === password
+            );
+            
+            if (user) {
+                // Stocker l'utilisateur connecté
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                currentLang = user.language || 'fr';
+                
+                // Rediriger vers la page d'accueil
+                showPage('home-page');
+            } else {
+                alert(translations[currentLang].alertInvalidCredentials || 'Email/téléphone ou mot de passe incorrect');
+            }
+        });
+        
+        // Prévisualisation de l'image
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                }
+                
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Simuler l'analyse d'image
+        function analyzeImage() {
+            if (!fileInput.files[0]) {
+                alert(translations[currentLang].alertSelectImage || 'Veuillez sélectionner une image à analyser');
+                return;
+            }
+            
+            // Simuler un temps d'analyse
+            setTimeout(function() {
+                showPage('results-page');
+            }, 1500);
+        }
+        
+        // Déconnexion
+        function logout() {
+            localStorage.removeItem('currentUser');
+            showPage('login-page');
+        }
+        
+        // Gestion du changement de langue
+        langSelectors.forEach(selector => {
+            selector.addEventListener('click', function() {
+                // Changer la langue
+                if (currentLang === 'fr') currentLang = 'en';
+                else if (currentLang === 'en') currentLang = 'ar';
+                else currentLang = 'fr';
+                
+                // Mettre à jour la page
+                updatePageTexts();
+            });
+        });
+        
+        // Vérifier si un utilisateur est déjà connecté
+        window.onload = function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser) {
+                currentLang = currentUser.language || 'fr';
+                showPage('home-page');
+            }
+        };
+    </script>
+</body>
+</html>
